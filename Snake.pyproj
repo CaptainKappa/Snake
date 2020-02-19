@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>74dab5be-fbe7-483a-8e53-c7e5c39c8697</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Snake.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
