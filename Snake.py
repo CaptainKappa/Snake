@@ -2,113 +2,134 @@ import pygame
 import random
 import sys
 
-def drawSnake(snakeList, block_size):
-    for part in snakeList:
-        pygame.draw.rect(gameDisplay, snake_color_filled, [part[0], part[1], block_size, block_size])
-        pygame.draw.rect(gameDisplay, snake_color_border, [part[0], part[1], block_size, block_size], 1)
+WIN_WIDTH = 300
+WIN_HEIGHT = 300
+BLOCK_SIZE = 10
 
-# variables
-width = 300
-height = 300
-block_size = 10
+class Snake:
+    COLOR_FILLED = (162, 224, 81)
+    COLOR_BORDER = (0, 0, 0)
 
-# Snake
-snakeHeadX, snakeHeadY = width/2, height/2 
-snake_color_filled = (162, 224, 81)
-snake_color_border = (0, 0, 0)
-snakeList = []
-snakeLength = 1
 
-# directions
-xForce, yForce = 0, 0
-up = False
-down = False
-right = False
-left = False
+    def __init__(self):
+        self.x = 150
+        self.y = 150
+        self.length = 1
+        self.body = []
+        self.xForce = 0
+        self.yForce = 0
+        self.direction = None
 
-# apple
-apple_color = (184, 44, 44)
-appleX,appleY = None, None
-ate = True
 
-# score
-score = 0
+    def move(self):
+        self.x += self.xForce * BLOCK_SIZE
+        self.y += self.yForce * BLOCK_SIZE
 
-# initializing
-pygame.init()
-gameDisplay = pygame.display.set_mode((width,height))
-pygame.display.set_caption("Snake")
-clock = pygame.time.Clock()
-crashed = False
 
-while not crashed:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            crashed = True
-        # rules for how the snake moves
-        elif event.type == pygame.KEYDOWN:
-            key = pygame.key.name(event.key)
-            if key == "w" and not down:
-                xForce, yForce = 0, -1
-                up = True
-                down, right, left = False, False, False
-            if key == "s" and not up:
-                xForce, yForce = 0, 1
-                down = True
-                up, right, left = False, False, False
-            if key == "d" and not left:
-                xForce, yForce = 1, 0
-                right = True
-                down, up, left = False, False, False
-            if key == "a" and not right:
-                xForce, yForce = -1, 0
-                left = True
-                down, right, up = False, False, False
+    def changeForce(self,key):
+        if key == "w" and self.direction != "down":
+            self.xForce, self.yForce = 0, -1
+            self.direction = "up"
+        elif key == "s" and self.direction != "up":
+            self.xForce, self.yForce = 0, 1
+            self.direction = "down"
+        elif key == "a" and self.direction != "right":
+            self.xForce, self.yForce = -1, 0
+            self.direction = "left"
+        elif key == "d" and self.direction != "left": 
+            self.xForce, self.yForce = 1, 0
+            self.direction = "right"
 
-    # "resets" whole screen
-    gameDisplay.fill((0,0,0))
+
+    def draw(self, win):
+        snakeHead = []
+        snakeHead.append(self.x)
+        snakeHead.append(self.y)
+        self.body.append(snakeHead)
+
+        if len(self.body) > self.length:
+            del self.body[0]
+
+        for element in self.body:
+            pygame.draw.rect(win, self.COLOR_FILLED, [element[0], element[1], BLOCK_SIZE, BLOCK_SIZE])
+            pygame.draw.rect(win, self.COLOR_BORDER, [element[0], element[1], BLOCK_SIZE, BLOCK_SIZE], 1)
+
+
+    def colApple(self, apple):
+        if self.x == apple.x and self.y == apple.y:
+            apple.ate = True
+            self.length += 1
+            return True
+        else:
+            return False
+
+
+    def colWall(self):
+        if self.x >= 300 or self.x <= -1 or self.y >= 300 or self.y <= -1:
+            return True
+
+
+    def colBody(self):
+        for i in range(len(self.body) - 1):
+            if self.x == self.body[i][0] and self.y == self.body[i][1]:
+                return True
+
+
+class Apple:
+    COLOR = (184, 44, 44)
     
-    # spawn Apple if there is none
-    if ate is True:
-        appleX, appleY = random.randint(0,(width/block_size) - 1) * block_size, random.randint(0,(height/block_size) - 1) * block_size
-        ate = False
 
-        print(appleX,appleY)
+    def __init__(self):
+        self.x = random.randint(0,(WIN_WIDTH/BLOCK_SIZE) - 1) * BLOCK_SIZE
+        self.y = random.randint(0,(WIN_HEIGHT/BLOCK_SIZE) - 1) * BLOCK_SIZE
+        self.ate = False
 
-    rect_Apple = pygame.Rect(appleX, appleY, block_size, block_size)
-    pygame.draw.rect(gameDisplay, apple_color, rect_Apple, 0)
+    def draw(self, win):
+        pygame.draw.rect(win, self.COLOR, [self.x, self.y, BLOCK_SIZE, BLOCK_SIZE])
 
-    # check if snake collides with apple
-    if appleX == snakeHeadX and appleY == snakeHeadY:
-        score += 1
-        snakeLength += 1
-        ate = True
 
-    # movement for the snake
-    snakeHeadX, snakeHeadY = snakeHeadX + xForce * block_size, snakeHeadY + yForce * block_size
+# GAME HANDLING 
 
-    # updating the whole snake
-    snakeHead = []
-    snakeHead.append(snakeHeadX)
-    snakeHead.append(snakeHeadY)
-    snakeList.append(snakeHead)
-
-    if len(snakeList) > snakeLength:
-        del snakeList[0]
-
-    drawSnake(snakeList, block_size)
-
-    # check if snake collides with border or itself
-    if snakeHeadX >= 300 or snakeHeadX <= -1 or snakeHeadY >= 300 or snakeHeadY <= -1:
-        crashed = True 
-    
-    for i in range(len(snakeList) - 1):
-        if snakeHeadX == snakeList[i][0] and snakeHeadY == snakeList[i][1]:
-            crashed = True
-
+def draw_window(win, snake, apple):
+    win.fill((0,0,0))
+    snake.draw(win)
+    apple.draw(win)
     pygame.display.update()
-    clock.tick(10)
-    pass
 
-pygame.quit()
+
+def main():
+    snake = Snake()
+    apple = Apple()
+    win = pygame.display.set_mode((WIN_HEIGHT,WIN_HEIGHT))
+    clock = pygame.time.Clock()
+
+    score = 0
+
+    run = True
+    while run:
+        clock.tick(10)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.KEYDOWN:
+                    key = pygame.key.name(event.key)
+                    snake.changeForce(key)
+
+        snake.move()
+        
+        if snake.colApple(apple):
+            print("COLLISION APPLE")
+            apple = Apple()
+            score += 1
+        elif snake.colWall():
+            print("TODO GAME OVER")
+        elif snake.colBody():
+            print("TODO GAME OVER")
+            
+        draw_window(win, snake, apple)
+
+    pygame.quit()
+    quit()
+
+main()
 
