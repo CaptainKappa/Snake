@@ -2,7 +2,7 @@
 Little Snake Program written with Pygame
 
 TODO:
-  - create some Classes to get a better structure
+  - create some Classes to get a better structure // DONE
   - create a scoreboard
   - create a homescreen 
   - Bugfixing 
