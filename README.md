@@ -7,4 +7,4 @@ TODO:
   - create a homescreen // DONE
   - Bugfixing 
       - when quickly pressed w,a,s,d followed by the opposite direction you're going snake can move into itself
-      - ???
+      - apple sometimes spawns in snake
