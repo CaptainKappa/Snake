@@ -1,7 +1,6 @@
 import pygame
 import pygame.font
 import random
-import sys
 
 WIN_WIDTH = 300
 WIN_HEIGHT = 300
@@ -10,7 +9,6 @@ BLOCK_SIZE = 10
 class Snake:
     COLOR_FILLED = (0, 0, 0)
     COLOR_BORDER = (99, 163, 96)
-
 
     def __init__(self, x, y):
         self.x = x
@@ -21,13 +19,11 @@ class Snake:
         self.yForce = 0
         self.direction = None
 
-
     def move(self):
         self.x += self.xForce * BLOCK_SIZE
         self.y += self.yForce * BLOCK_SIZE
 
-
-    def changeForce(self,key):
+    def changeForce(self, key):
         if key == "w" and self.direction != "down":
             self.xForce, self.yForce = 0, -1
             self.direction = "up"
@@ -40,7 +36,6 @@ class Snake:
         elif key == "d" and self.direction != "left": 
             self.xForce, self.yForce = 1, 0
             self.direction = "right"
-
 
     def draw(self, win):
         snakeHead = []
@@ -55,7 +50,6 @@ class Snake:
             pygame.draw.rect(win, self.COLOR_FILLED, [element[0], element[1], BLOCK_SIZE, BLOCK_SIZE])
             pygame.draw.rect(win, self.COLOR_BORDER, [element[0], element[1], BLOCK_SIZE, BLOCK_SIZE], 1)
 
-
     def colApple(self, apple):
         if self.x == apple.x and self.y == apple.y:
             apple.ate = True
@@ -64,11 +58,9 @@ class Snake:
         else:
             return False
 
-
     def colWall(self):
         if self.x >= 281 or self.x <= 9 or self.y >= 281 or self.y <= 9:
             return True
-
 
     def colBody(self):
         for i in range(len(self.body) - 1):
@@ -79,9 +71,8 @@ class Snake:
 class Apple:
     COLOR_FILLED = (184, 44, 44)
     COLOR_BORDER = (99, 163, 96)
-    
 
-    def __init__(self,snakeBody):
+    def __init__(self, snakeBody):
         while True:
             self.x = random.randint(1,(WIN_WIDTH/BLOCK_SIZE) - 2) * BLOCK_SIZE
             self.y = random.randint(1,(WIN_HEIGHT/BLOCK_SIZE) - 2) * BLOCK_SIZE
@@ -89,13 +80,11 @@ class Apple:
             if not self.checkOccupied(snakeBody):
                 break
 
-
-
     def draw(self, win):
         pygame.draw.rect(win, self.COLOR_FILLED, [self.x, self.y, BLOCK_SIZE, BLOCK_SIZE])
         pygame.draw.rect(win, self.COLOR_BORDER, [self.x, self.y, BLOCK_SIZE, BLOCK_SIZE], 1)
 
-    def checkOccupied(self,snakeBody):
+    def checkOccupied(self, snakeBody):
         for element in snakeBody:
             if element[0] == self.x and element[1] == self.y:
                 return True
@@ -111,7 +100,7 @@ class Start:
     PLAYFONT = pygame.font.SysFont("Power Red and Green", 30)
     EXITFONT = pygame.font.SysFont("Power Red and Green", 30)
 
-    def __init__(self,score):
+    def __init__(self, score):
         self.snakeLabel = self.SNAKEFONT.render("SNAKE", 1, (0, 0, 0))
         self.scoreLabel = self.SCOREFONT.render("Score: " + str(score), 1, (0, 0, 0))
         self.playLabel = self.PLAYFONT.render("Play", 1, (0, 0, 0))
@@ -122,7 +111,7 @@ class Start:
 
         self.running = True
 
-    def drawSnake(self,win):
+    def drawSnake(self, win):
         if self.snake.x == 10 and self.snake.y == 10:
             self.snake.xForce, self.snake.yForce = 1, 0
         elif self.snake.x == 280 and self.snake.y == 10:
@@ -135,15 +124,15 @@ class Start:
         win.fill((99, 163, 96))
         self.snake.draw(win)
 
-    def renderMenu(self,mousePos):
-        if (mousePos[0] >= 120 and mousePos[0] <= 170) and (mousePos[1] >= 140 and mousePos[1] <= 160):
+    def renderMenu(self, mousePos):
+        if (120 <= mousePos[0] <= 170) and (140 <= mousePos[1] <= 160):
             self.PLAYFONT.set_underline(True)
             self.PLAYFONT.set_bold(True)
         else:
             self.PLAYFONT.set_underline(False)
             self.PLAYFONT.set_bold(False)
 
-        if (mousePos[0] >= 120 and mousePos[0] <= 170) and (mousePos[1] >= 170 and mousePos[1] <= 190):
+        if (120 <= mousePos[0] <= 170) and (170 <= mousePos[1] <= 190):
             self.EXITFONT.set_underline(True)
             self.EXITFONT.set_bold(True)
         else:
@@ -153,8 +142,7 @@ class Start:
         self.playLabel = self.PLAYFONT.render("Play", 1, (0, 0, 0))
         self.exitLabel = self.EXITFONT.render("Exit", 1, (0, 0, 0))
 
-
-    def draw_window_start(self,win,mousePos):
+    def draw_window_start(self, win, mousePos):
         self.drawSnake(win)
         self.renderMenu(mousePos)
 
@@ -164,12 +152,11 @@ class Start:
         win.blit(self.scoreLabel, (110, 250))
         pygame.display.flip()
 
-
-    def clickButton(self,mousePos):
-        if (mousePos[0] >= 120 and mousePos[0] <= 170) and (mousePos[1] >= 140 and mousePos[1] <= 160):
+    def clickButton(self, mousePos):
+        if (120 <= mousePos[0] <= 170) and (140 <= mousePos[1] <= 160):
             self.running = False
             main()
-        if (mousePos[0] >= 120 and mousePos[0] <= 170) and (mousePos[1] >= 170 and mousePos[1] <= 190):
+        if (120 <= mousePos[0] <= 170) and (170 <= mousePos[1] <= 190):
             self.running = False
 
 
@@ -183,6 +170,7 @@ def draw_window_play(win, snake, apple):
     pygame.display.update()
 
 
+# main menu loop
 def start_window(score):
     start = True
     pygame.init()
@@ -208,6 +196,7 @@ def start_window(score):
     quit()
 
 
+# actual game loop
 def main():
     snake = Snake(150, 150)
     apple = Apple(snake.body)
@@ -219,6 +208,8 @@ def main():
     run = True
     while run:
         clock.tick(10)
+
+        # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -226,8 +217,10 @@ def main():
                     key = pygame.key.name(event.key)
                     snake.changeForce(key)
 
+        # move snake
         snake.move()
-        
+
+        # check for apple, wall, body
         if snake.colApple(apple):
             apple = Apple(snake.body)
             score += 1
@@ -238,10 +231,13 @@ def main():
             run = False
             start_window(score)
 
+        # update screen
         draw_window_play(win, snake, apple)
 
+    # quit the program
     pygame.quit()
     quit()
+
 
 start_window(0)
 
