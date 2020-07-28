@@ -1,10 +1,19 @@
 # Snake
-Little Snake Program written with Pygame
 
-TODO:
-  - create some Classes to get a better structure // DONE
-  - create a scoreboard // SEMIDONE
-  - create a homescreen // DONE
-  - Bugfixing 
-      - when quickly pressed w,a,s,d followed by the opposite direction you're going snake can move into itself
-      - apple sometimes spawns in snake
+Python pygame implementation of the game Snake.
+
+## Demo
+
+![Snake Demo](demo/snake_demo.gif)
+
+## Requirements
+```A working python installation```
+
+## How to run
+
+```
+git clone https://github.com/CaptainKappa/Snake.git
+cd Snake
+pip install pygame
+py Snake.py
+```
